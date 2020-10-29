@@ -12,7 +12,7 @@ public class LogUtil {
      * @param sum
      */
     public static void logProcess(String msg, int cur, int sum) {
-        if(cur % (sum / 20) == 0){
+        if(cur % (sum / 100) == 0){
             System.out.println(msg +" " +(cur * 100.0 / sum) +"%");
         }
         if(cur == (sum -1)){
