@@ -1,16 +1,21 @@
 package com.toolplat.mosaic.search;
 
 import com.toolplat.mosaic.domain.PuzzleUnit;
+import com.toolplat.mosaic.util.ImageUtil;
 import com.toolplat.mosaic.util.Mode;
+import com.toolplat.mosaic.util.PHashUtil;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
-public class TreeUtil {
+public class TreeSearchUtil {
     public static BufferedImage getColseByGray(TreeMap<String, List<PuzzleUnit>> tree, String key) {
 
         Map.Entry<String,List<PuzzleUnit>> low = tree.floorEntry(key);
@@ -27,21 +32,38 @@ public class TreeUtil {
         return getSelectBufferedImage(tree, select.getKey(), select.getValue());
     }
 
-    private static BufferedImage getSelectBufferedImage(TreeMap<String, List<PuzzleUnit>> tree, String key,
-                                                        List<PuzzleUnit> value) {
-        Collections.shuffle(value);
-        Optional<PuzzleUnit> optional = value.stream().filter(it -> it.max > 0).findFirst();
-        if (optional.isPresent()) {
-            optional.get().max--;
-            return optional.get().im;
-        } else {
-            // 移除图片
-//            tree.remove(key);
-            return value.get(0).im;
+    /**
+     * 比较值0～1范围取之，越接近1，越相似
+     * @param tree
+     * @param key
+     * @return
+     */
+    public static BufferedImage getColseByPHash(TreeMap<String, List<PuzzleUnit>> tree, String key) {
+
+        if (tree == null || key == null) {
+            return null;
         }
+        String result = "";
+        double min = 0;
+        for (String k : tree.keySet()) {
+            double d = PHashUtil.calculateSimilarity(k, key);
+            if (d > min) {
+                min = d;
+                result = k;
+            }
+        }
+        List<PuzzleUnit> list = tree.get(result);
+        return getSelectBufferedImage(tree, result, list);
+
     }
 
 
+    /**
+     * R、G、B 三色分别绝对值求和，取平均数
+     * @param tree
+     * @param key
+     * @return
+     */
     public static BufferedImage getColseByRGB(TreeMap<String, List<PuzzleUnit>> tree, String key) {
         if (tree == null || key == null) {
             return null;
@@ -68,14 +90,37 @@ public class TreeUtil {
         return getSelectBufferedImage(tree, result, list);
     }
 
+    private static BufferedImage getSelectBufferedImage(TreeMap<String, List<PuzzleUnit>> tree, String key,
+                                                        List<PuzzleUnit> value) {
+        Collections.shuffle(value);
+        Optional<PuzzleUnit> optional = value.stream().filter(it -> it.max > 0).findFirst();
+        try {
+            if (optional.isPresent()) {
+                optional.get().max--;
+
+                return ImageUtil.resize(ImageIO.read(new File(optional.get().filePath)), optional.get().width,
+                        optional.get().height);
+            } else {
+                // 移除图片
+//            tree.remove(key);
+                return ImageUtil.resize(ImageIO.read(new File(value.get(0).filePath)), value.get(0).width,
+                        value.get(0).height);
+            }
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
 
     public static final String calKey(BufferedImage image, String mode) {
         switch (mode) {
             case Mode.GRAY:
-                return ""+calAvgGRAY(image);
+                return "" + calAvgGRAY(image);
             case Mode.RGB:
                 float[] res = calAvgRGB(image);
                 return res[0] + "-" + res[1] + "-" + res[2];
+            case Mode.PHASH:
+                return PHashUtil.getFeatureValue(image);
             default:
                 return "";
         }

@@ -1,11 +1,12 @@
 package com.toolplat.mosaic;
 
 import com.google.common.collect.Lists;
-import com.toolplat.mosaic.crawler.ImageClear;
+import com.toolplat.mosaic.util.ImageClear;
 import com.toolplat.mosaic.domain.PuzzleUnit;
-import com.toolplat.mosaic.search.TreeUtil;
+import com.toolplat.mosaic.search.TreeSearchUtil;
 import com.toolplat.mosaic.util.ImageUtil;
 import com.toolplat.mosaic.util.Mode;
+import com.toolplat.mosaic.util.LogUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
@@ -14,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -24,6 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MosaicMaker {
     //图库路径
     private String dbPath;
+    // 图库文件数量
+    private int dbSize;
     //目标图片路径
     private String aimPath;
     //图片输出路径
@@ -154,6 +156,11 @@ public class MosaicMaker {
 
 
     public void make() throws IOException {
+
+        File dbFile = new File(dbPath);
+        File[] dbFiles = dbFile.listFiles();
+        dbSize = dbFiles.length;
+
         File aimFile = new File(aimPath);
         BufferedImage aimIm = ImageIO.read(aimFile);
         //使用默认尺寸
@@ -163,7 +170,7 @@ public class MosaicMaker {
         // 计算单元大小
         calSubIm(aimWidth, aimHeight);
         // 删除重复图片
-        ImageClear.clearByMd5(dbPath);
+        ImageClear.clearByMd5(dbFiles);
         readAllImage();
         core(aimIm);
     }
@@ -174,7 +181,8 @@ public class MosaicMaker {
         BufferedImage newIm = new BufferedImage(width, height, aimIm.getType());
         Graphics2D g = newIm.createGraphics();
         int w = width / subWidth;
-        System.out.println("拼图共需要" + (w * w) + "张图片，目前读取"+readImg.get()+"张,重复率"+((w * w) / readImg.get()));
+        System.out.println("拼图共需要" + (w * w) + "张图片，目前读取"+readImg.get()+"张,重复率"+((w * 1.0 * w) / readImg.get()));
+        readImg = new AtomicInteger(0);
         long start = System.currentTimeMillis();
         ExecutorService pool = Executors.newCachedThreadPool();
         CountDownLatch latch = new CountDownLatch(w);
@@ -187,6 +195,7 @@ public class MosaicMaker {
                     int y = j * subHeight;
                     BufferedImage curAimSubIm = aimIm.getSubimage(x, y, subWidth, subHeight);
                     BufferedImage fitSubIm = findFitIm(curAimSubIm);
+                    LogUtil.logProcess("图片绘制中……", readImg.incrementAndGet() ,w * w);
                     g.drawImage(fitSubIm, x, y, subWidth, subHeight, null);
                 }
                 latch.countDown();
@@ -208,9 +217,11 @@ public class MosaicMaker {
     public BufferedImage findFitIm(BufferedImage image) {
         switch (mode) {
             case Mode.RGB:
-                return TreeUtil.getColseByRGB(tree,TreeUtil.calKey(image, mode));
+                return TreeSearchUtil.getColseByRGB(tree, TreeSearchUtil.calKey(image, mode));
             case Mode.GRAY:
-                return TreeUtil.getColseByGray(tree,TreeUtil.calKey(image, mode));
+                return TreeSearchUtil.getColseByGray(tree, TreeSearchUtil.calKey(image, mode));
+            case Mode.PHASH:
+                return TreeSearchUtil.getColseByPHash(tree, TreeSearchUtil.calKey(image, mode));
             default:
                 return null;
         }
@@ -231,7 +242,8 @@ public class MosaicMaker {
             if (files[i].isFile()) {
                 int index = i % threadNum;
                 if (readTask[index] == null) {
-                    readTask[index] = new ReadTask(latch, subWidth, subHeight);
+                    ReadTask rt = new ReadTask(latch, subWidth, subHeight);
+                    readTask[index] = rt;
                 }
                 readTask[index].add(files[i]);
             }
@@ -248,7 +260,6 @@ public class MosaicMaker {
             pool.shutdown();
         }
         System.out.println("共读取" + readImg.get() + "张图片");
-
         System.out.println("读取图库完成，耗时" + (System.currentTimeMillis() - start) + "毫秒");
     }
 
@@ -272,15 +283,16 @@ public class MosaicMaker {
         @Override
         public void run() {
             for (File f : files) {
+
                 if (f.isFile()) {
                     PuzzleUnit unit = null;
                     try {
-
                         BufferedImage bi  = ImageUtil.resize(ImageIO.read(f), w, h);
-                        System.out.println("正在读取文件" + readImg.incrementAndGet());
-                        String key = TreeUtil.calKey(bi, mode);
-                        unit =  new PuzzleUnit(max,mode,key,bi);
-                    } catch (IOException e) {
+                        String key = TreeSearchUtil.calKey(bi, mode);
+                        bi = null;
+                        LogUtil.logProcess("读取文件中……",readImg.incrementAndGet(), dbSize);
+                        unit =  new PuzzleUnit(max, key, f.getAbsolutePath(), h, w);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     if(null == unit){
@@ -302,7 +314,7 @@ public class MosaicMaker {
      * 计算子团尺寸
      */
     private void calSubIm(int w, int h) {
-        int size = 50;
+        int size = 30;
         subWidth = size;
         double d  = size * (h / (w * 1.0));
         subHeight = (int)d ;

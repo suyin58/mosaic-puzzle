@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * 从百度下载图片测试使用
+ */
 public class ImageBaiduCom {
 
 //    Request URL: https://image.baidu.com/search/acjson?tn=resultjson_com&logid=8625824950402822279&ipn=rj&ct=201326592&is=&fp=result&queryWord=%E8%A1%A8%E6%83%85%E5%8C%85&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=&z=&ic=&hd=&latest=&copyright=&word=%E8%A1%A8%E6%83%85%E5%8C%85&s=&se=&tab=&width=&height=&face=&istype=&qc=&nc=1&fr=&expermode=&force=&pn=600&rn=30&gsm=258&1603849842086=

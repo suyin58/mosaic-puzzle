@@ -1,12 +1,10 @@
-package com.toolplat.mosaic.crawler;
+package com.toolplat.mosaic.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,24 +14,29 @@ import java.util.Set;
  */
 public class ImageClear {
 
-    static final String PARH="/Users/suyin/Documents/temp/avatar";
 
     public static void main(String[] args) throws IOException {
-        clearByMd5(PARH);
+        String PARH="/Users/suyin/Documents/temp/avatar";
+        File dbFile = new File(PARH);
+        File[] dbFiles = dbFile.listFiles();
+        clearByMd5(dbFiles);
     }
 
-    public static void clearByMd5(String path) throws IOException {
-        File fPath = new File(path);
-        File[] subFiles = fPath.listFiles();
-        System.out.println("文件数量 -> "+subFiles.length);
+    public static void clearByMd5(File[] dbFiles) throws IOException {
+        System.out.println("开始去重图片");
         Set<String> md5s = new HashSet<>();
-        for (File f : subFiles){
+
+        int delN = 0;
+        for (int i = 0 ; i < dbFiles.length ; i++ ){
+            File f = dbFiles[i];
+            LogUtil.logProcess("图片去重中……", i , dbFiles.length);
             FileInputStream fis = null;
             try {
                 fis = new FileInputStream(f);
                 String md5 = DigestUtils.md5Hex(fis);
                 if (md5s.contains(md5)) {
                     f.delete();
+                    delN ++;
                     continue;
                 }
                 md5s.add(md5);
@@ -43,10 +46,7 @@ public class ImageClear {
                 }
             }
         }
-
-        File fPath1 = new File(path);
-        File[] subFiles1 = fPath1.listFiles();
-        System.out.println("文件数量 -> "+subFiles1.length);
+        System.out.println("去重完成，剩余图片" + (dbFiles.length - delN) + "张");
     }
 
 

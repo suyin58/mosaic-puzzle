@@ -18,30 +18,19 @@ public class PuzzleUnit implements Comparable<PuzzleUnit> {
      */
     public String mode;
     public String key;
-    public BufferedImage im;
 
-    /**
-     *
-     * @param max
-     * @param im
-     */
-    public PuzzleUnit(int max, BufferedImage im) {
-        this.max = max;
-        this.im = im;
-    }
 
-    /**
-     *
-     * @param max
-     * @param mode
-     * @param key
-     * @param im
-     */
-    public PuzzleUnit(int max, String mode, String key, BufferedImage im) {
+    public String filePath;
+    public int height;
+    public int width;
+
+
+    public PuzzleUnit(int max, String key, String filePath, int height, int width) {
         this.max = max;
-        this.mode = mode;
         this.key = key;
-        this.im = im;
+        this.filePath = filePath;
+        this.height = height;
+        this.width = width;
     }
 
     //返回1表示当前值大于比较值，返回-1表示当前值小于比较值,返回0表示相等
