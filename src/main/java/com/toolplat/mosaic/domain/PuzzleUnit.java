@@ -1,8 +1,6 @@
 package com.toolplat.mosaic.domain;
 
-import com.toolplat.mosaic.util.Mode;
-
-import java.awt.image.BufferedImage;
+import com.toolplat.mosaic.constant.Mode;
 
 
 /**

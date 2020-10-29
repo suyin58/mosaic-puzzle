@@ -26,82 +26,10 @@ import java.util.stream.Collectors;
  */
 public class ImageBaiduCom {
 
-//    Request URL: https://image.baidu.com/search/acjson?tn=resultjson_com&logid=8625824950402822279&ipn=rj&ct=201326592&is=&fp=result&queryWord=%E8%A1%A8%E6%83%85%E5%8C%85&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=&z=&ic=&hd=&latest=&copyright=&word=%E8%A1%A8%E6%83%85%E5%8C%85&s=&se=&tab=&width=&height=&face=&istype=&qc=&nc=1&fr=&expermode=&force=&pn=600&rn=30&gsm=258&1603849842086=
-//    Request Method: GET
-//    Status Code: 200 OK
-//    Remote Address: 180.97.33.134:443
-//    Referrer Policy: strict-origin-when-cross-origin
-//    Access-Control-Allow-Credentials: true
-//    Access-Control-Allow-Origin: https://image.baidu.com
-//    Connection: keep-alive
-//    Content-Encoding: gzip
-//    Content-Type: text/html; charset=UTF-8
-//    Date: Wed, 28 Oct 2020 01:50:42 GMT
-//    Lid: 7eef3627422d81da
-//    P3p: CP=" OTI DSP COR IVA OUR IND COM "
-//    Search_result: OK
-//    Server: Apache
-//    Set-Cookie: BDRCVFR[-pGxjrCMryR]=mk3SLVN4HKm; path=/; domain=.baidu.com
-//    Tracecode: 30421222771658293514102809
-//    Tracecode: 30421222771658293514102809
-//    Tracecode: 30421228430932498698102809
-//    Transfer-Encoding: chunked
-//    Vary: Accept-Encoding
-//    Accept: text/plain, */*; q=0.01
-//Accept-Encoding: gzip, deflate, br
-//Accept-Language: zh-CN,zh;q=0.9,en;q=0.8
-//Cache-Control: no-cache
-//Connection: keep-alive
-//Cookie: BDIMGISLOGIN=0; winWH=%5E6_1680x836; BDqhfp=%E8%A1%A8%E6%83%85%E5%8C%85%26%26NaN-1undefined%26%2612907%26%2623; BIDUPSID=4B16CDE325172198AD992CDFBA08A964; PSTM=1585806524; BAIDUID=628C98C1C46FE643B77DC29784C53D1F:FG=1; BDUSS=EhIU0FpTlRicWF0Y3NqMlVEdlB4S1NCR0xkcHJrR28xWERoaVZGTEd5S3JBaGxmSVFBQUFBJCQAAAAAAAAAAAEAAAA1LwsF1eahpGRvdGHO3surAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKt18V6rdfFeM; indexPageSugList=%5B%22%E5%85%B3%E6%B3%A8%20icon%22%5D; cleanHistoryStatus=0; BDUSS_BFESS=EhIU0FpTlRicWF0Y3NqMlVEdlB4S1NCR0xkcHJrR28xWERoaVZGTEd5S3JBaGxmSVFBQUFBJCQAAAAAAAAAAAEAAAA1LwsF1eahpGRvdGHO3surAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKt18V6rdfFeM; BDSFRCVID=oE0OJeC62ldsOr5rVnihjPnn-e2w995TH6aow6MxFwHubXHCecnkEG0P_f8g0KubNp3eogKKKgOTHICF_2uxOjjg8UtVJeC6EG0Ptf8g0M5; H_BDCLCKID_SF=tb4q_ItaJC-3HPozq45B5-Ljh2T22jnZ-259aJ5nJDoCe4I6jnjK-f0QyM6T2tCt-nrqQM5FQpP-HqTgLT7mh4-Ehn-JQpc8ygnpKl0MLUOlbb0xyTOD5pIsyxnMBMni52OnapTn3fAKftnOM46JehL3346-35543bRTLnLy5KJtMDF4jj8BDj5LDNRf2bjWHjv-B4nVajraqjrnhPF306_zXP6-35KH056-KxQF-jC5OP3F0-T_XqFvMfnB2h37JD6yL45454c_O-cajxkaDUPF2-oxJpOgQRbMopvaKDjrSJ6vbURvyP-g3-7A3M5dtjTO2bc_5KnlfMQ_bf--QfbQ0hOhqP-j5JIEoKtatIKbhC-r5nJbqRFqMqrt2D62aKDs0nccBhcqEIL4jTrW-x-XKmcUX63BLIoX24t-btOlOxbSj4Qo3Rk_Dn5laJbp3mJiKCOC0l5nhMJbb67JDMn3-ltLX4oy523iab3vQpnzEpQ3DRoWXPIqbN7P-p5Z5mAqKl0MLPbtbb0xb6_0D65BDHA8t6Ksb5vfsJbVaJ3MHJRcq4bohjPhbtb9BtQmJJrfh4okKJOKKq_GX46mh4CIbM6RJx6ZQg-q3RAaypcdjUbRWRotQp-Z04De0x-jLIQOVn0MW-5DeMb-X4nJyUPUbPnnBUcm3H8HL4nv2JcJbM5m3x6qLTKkQN3T-PKO5bRu_CF-JK-ahC8RDTRb5nbH5hoea4IXKKOLVb7Ntp7keq8CD4vfKU4Xjq5p2tc32HRXWj6Htt0BbD52y5jHhnbBXq7l-MvtKHb75b5JaJvpsIJMBPDWbT8U5f5wbTJ-aKviahvjBMb1OqODBT5h2M4qMxtOLR3pWDTm_q5TtUJMeCnTDMFhe4tX-NFqJjKJJM5; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598; MCITY=-179%3A; PSINO=5; BDRCVFR[feWj1Vr5u3D]=I67x6TjHwwYf0; delPer=1; BA_HECTOR=2kak25ah2585009h6a1fphjio0l; H_PS_PSSID=32819_1455_32843_32949_31254_32705_32230_7516_7605_32117_32911; BDRCVFR[dG2JNJb_ajR]=mk3SLVN4HKm; userFrom=www.baidu.com; BDRCVFR[-pGxjrCMryR]=mk3SLVN4HKm
-//Host: image.baidu.com
-//Pragma: no-cache
-//Referer: https://image.baidu.com/search/index?tn=baiduimage&ps=1&ct=201326592&lm=-1&cl=2&nc=1&ie=utf-8&word=%E8%A1%A8%E6%83%85%E5%8C%85
-//Sec-Fetch-Dest: empty
-//Sec-Fetch-Mode: cors
-//Sec-Fetch-Site: same-origin
-//User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36
-//X-Requested-With: XMLHttpRequest
-//tn: resultjson_com
-//logid: 8625824950402822279
-//ipn: rj
-//ct: 201326592
-//is:
-//fp: result
-//queryWord: 表情包
-//cl: 2
-//lm: -1
-//ie: utf-8
-//oe: utf-8
-//adpicid:
-//st:
-//z:
-//ic:
-//hd:
-//latest:
-//copyright:
-//word: 表情包
-//s:
-//se:
-//tab:
-//width:
-//height:
-//face:
-//istype:
-//qc:
-//nc: 1
-//fr:
-//expermode:
-//force:
-//pn: 600
-//rn: 30
-//gsm: 258
-//1603849842086:
-
-
     private static final String targetPath = "/Users/suyin/Documents/temp/avatar/";
     private static final Integer RN = 30;
     public static void main(String[] args) throws IOException, InterruptedException {
-        String url = "https://image.baidu.com/search/acjson?tn=resultjson_com&logid=10545870740288921314&ipn=rj&ct=201326592&is=&fp=result&queryWord=%E9%AB%98%E6%B8%85%E5%8A%A8%E6%BC%AB&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=-1&z=&ic=0&hd=&latest=&copyright=&word=%E9%AB%98%E6%B8%85%E5%8A%A8%E6%BC%AB&s=&se=&tab=&width=&height=&face=0&istype=2&qc=&nc=1&fr=&expermode=&force=&pn=30&rn=30&gsm=1e&1603937789110=";
+        String url = "https://image.baidu.com/search/acjson?tn=resultjson_com&logid=10763507436069158249&ipn=rj&ct=201326592&is=&fp=result&queryWord=%E5%89%A7%E7%85%A7%E7%90%89%E7%92%83&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=-1&z=&ic=&hd=&latest=&copyright=&word=%E5%89%A7%E7%85%A7%E7%90%89%E7%92%83&s=&se=&tab=&width=&height=&face=0&istype=2&qc=&nc=1&fr=&expermode=&force=&pn=30&rn=30&gsm=1e&1603971148293=";
         String gsm = url.substring(url.indexOf("gsm=") + "gsm=".length()
                 , url.indexOf("gsm=") + "gsm=".length() + 2);
         int n = 1;

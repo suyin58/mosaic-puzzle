@@ -1,4 +1,4 @@
-package com.toolplat.mosaic.util;
+package com.toolplat.mosaic.constant;
 
 /**
  * Created by Clanner on 2018/10/7.

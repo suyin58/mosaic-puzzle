@@ -2,7 +2,7 @@ package com.toolplat.mosaic.search;
 
 import com.toolplat.mosaic.domain.PuzzleUnit;
 import com.toolplat.mosaic.util.ImageUtil;
-import com.toolplat.mosaic.util.Mode;
+import com.toolplat.mosaic.constant.Mode;
 import com.toolplat.mosaic.util.PHashUtil;
 
 import javax.imageio.ImageIO;
@@ -137,7 +137,8 @@ public class TreeSearchUtil {
                 int r = (pixel & 0xff0000) >> 16;
                 int g = (pixel & 0xff00) >> 8;
                 int b = (pixel & 0xff);
-                avgGray += (77 * r + 150 * g + 29 * b + 128);
+//                avgGray += (77 * r + 150 * g + 29 * b + 128);
+                avgGray += (0.299 * r + 0.597 * g + 0.114 * b);
             }
         }
         return avgGray / (w * h);

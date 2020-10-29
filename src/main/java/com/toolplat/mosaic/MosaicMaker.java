@@ -5,7 +5,7 @@ import com.toolplat.mosaic.util.ImageClear;
 import com.toolplat.mosaic.domain.PuzzleUnit;
 import com.toolplat.mosaic.search.TreeSearchUtil;
 import com.toolplat.mosaic.util.ImageUtil;
-import com.toolplat.mosaic.util.Mode;
+import com.toolplat.mosaic.constant.Mode;
 import com.toolplat.mosaic.util.LogUtil;
 
 import javax.imageio.ImageIO;
@@ -169,8 +169,6 @@ public class MosaicMaker {
         int aimHeight = aimIm.getHeight();
         // 计算单元大小
         calSubIm(aimWidth, aimHeight);
-        // 删除重复图片
-        ImageClear.clearByMd5(dbFiles);
         readAllImage();
         core(aimIm);
     }
@@ -181,6 +179,7 @@ public class MosaicMaker {
         BufferedImage newIm = new BufferedImage(width, height, aimIm.getType());
         Graphics2D g = newIm.createGraphics();
         int w = width / subWidth;
+        int h = height / subHeight;
         System.out.println("拼图共需要" + (w * w) + "张图片，目前读取"+readImg.get()+"张,重复率"+((w * 1.0 * w) / readImg.get()));
         readImg = new AtomicInteger(0);
         long start = System.currentTimeMillis();
@@ -189,13 +188,13 @@ public class MosaicMaker {
         for (int i = 0; i < w; i++) {
             int finalI = i;
             pool.execute(() -> {
-                for (int j = 0; j < w; j++) {
+                for (int j = 0; j < h; j++) {
 //                    System.out.printf("正在拼第%d张图片\n", (finalI + 1) * (j + 1));
                     int x = finalI * subWidth;
                     int y = j * subHeight;
                     BufferedImage curAimSubIm = aimIm.getSubimage(x, y, subWidth, subHeight);
                     BufferedImage fitSubIm = findFitIm(curAimSubIm);
-                    LogUtil.logProcess("图片绘制中……", readImg.incrementAndGet() ,w * w);
+                    LogUtil.logProcess("图片绘制中……", readImg.incrementAndGet() ,w * h);
                     g.drawImage(fitSubIm, x, y, subWidth, subHeight, null);
                 }
                 latch.countDown();
@@ -314,10 +313,12 @@ public class MosaicMaker {
      * 计算子团尺寸
      */
     private void calSubIm(int w, int h) {
-        int size = 30;
-        subWidth = size;
-        double d  = size * (h / (w * 1.0));
-        subHeight = (int)d ;
+//        int size = 30;
+//        subWidth = size;
+//        double d  = size * (h / (w * 1.0));
+//        subHeight = (int)d ;
+        subWidth = 60;
+        subHeight = subWidth * 3/4 ;
     }
 
 }
