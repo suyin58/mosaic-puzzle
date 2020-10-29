@@ -48,6 +48,7 @@ public class MosaicMaker {
     private TreeMap<String,List<PuzzleUnit>> tree = new TreeMap();
 
     public MosaicMaker(String dbPath, String aimPath, String outPath) {
+
         this(dbPath, aimPath, outPath, 64, 64, 5, Mode.RGB, 1920, 1080, 300, 4);
     }
 
@@ -316,7 +317,10 @@ public class MosaicMaker {
 //        subWidth = size;
 //        double d  = size * (h / (w * 1.0));
 //        subHeight = (int)d ;
-        subWidth = 60;
+        subWidth = w / 200;
+        if(subWidth > 60){
+            subWidth = 60;
+        }
         subHeight = subWidth * 3/4 ;
     }
 
