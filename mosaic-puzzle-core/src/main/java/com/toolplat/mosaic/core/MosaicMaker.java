@@ -2,10 +2,10 @@ package com.toolplat.mosaic.core;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
+import com.toolplat.mosaic.core.constant.Mode;
 import com.toolplat.mosaic.core.domain.PuzzleUnit;
 import com.toolplat.mosaic.core.search.TreeSearchUtil;
 import com.toolplat.mosaic.core.util.ImageUtil;
-import com.toolplat.mosaic.core.constant.Mode;
 import com.toolplat.mosaic.core.util.LogUtil;
 
 import javax.imageio.ImageIO;
@@ -13,7 +13,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
@@ -224,25 +223,26 @@ public class MosaicMaker {
         BufferedImage newIm = new BufferedImage(width, height, aimIm.getType());
         Graphics2D g = newIm.createGraphics();
         readImg = new AtomicInteger(0);
-        ExecutorService pool = Executors.newCachedThreadPool();
-        CountDownLatch latch = new CountDownLatch(w);
+        ExecutorService pool = Executors.newFixedThreadPool(threadNum);
+        CountDownLatch latch = new CountDownLatch(w * h);
         for (int i = 0; i < w; i++) {
             int finalI = i;
-            pool.execute(() -> {
-                for (int j = 0; j < h; j++) {
-//                    System.out.printf("正在拼第%d张图片\n", (finalI + 1) * (j + 1));
+
+            for (int j = 0; j < h; j++) {
+                int finalJ = j;
+                pool.execute(() -> {
                     int x = finalI * unitW;
-                    int y = j * unitH;
+                    int y = finalJ * unitH;
                     BufferedImage curAimSubIm = aimIm.getSubimage(x, y, unitW, unitH);
                     BufferedImage fitSubIm = findFitIm(curAimSubIm);
-                    if(autoBlend){
+                    if (autoBlend) {
                         fitSubIm = ImageUtil.blend(fitSubIm, curAimSubIm, ImageUtil.calcBlend(fitSubIm));
                     }
-                    LogUtil.logProcess("图片绘制中……", readImg.incrementAndGet() ,w * h);
+                    LogUtil.logProcess("图片绘制中……", readImg.incrementAndGet(), w * h);
                     g.drawImage(fitSubIm, x, y, unitW, unitH, null);
-                }
-                latch.countDown();
-            });
+                    latch.countDown();
+                });
+            }
         }
         try {
             latch.await();
@@ -276,21 +276,31 @@ public class MosaicMaker {
         File dir = new File(this.dbPath);
         File[] files = dir.listFiles();
         ExecutorService pool = Executors.newFixedThreadPool(threadNum);
-        int size = files.length;
-        ReadTask[] readTask = new ReadTask[threadNum];
-        CountDownLatch latch = new CountDownLatch(threadNum);
-        for (int i = 0; i < size; i++) {
-            if (files[i].isFile()) {
-                int index = i % threadNum;
-                if (readTask[index] == null) {
-                    ReadTask rt = new ReadTask(latch, unitW, unitH);
-                    readTask[index] = rt;
+        CountDownLatch latch = new CountDownLatch(files.length);
+        for (File file : files) {
+            pool.execute(() -> {
+                if (file.isFile()) {
+                    PuzzleUnit unit = null;
+                    try {
+                        BufferedImage bi = ImageUtil.resize(ImageIO.read(file), unitW, unitH);
+                        String key = ImageUtil.calKey(bi, mode);
+                        bi = null;
+                        LogUtil.logProcess("读取文件中……", readImg.incrementAndGet(), dbSize);
+                        unit = new PuzzleUnit(max, key, file.getAbsolutePath(), unitW, unitH);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (null != unit) {
+                        if (!tree.containsKey(unit.key)) {
+                            tree.put(unit.key, Lists.newArrayList(unit));
+                        } else {
+                            tree.get(unit.key).add(unit);
+                        }
+                    }
                 }
-                readTask[index].add(files[i]);
-            }
-        }
-        for (int i = 0; i < threadNum; i++) {
-            pool.execute(readTask[i]);
+                latch.countDown();
+            });
+
         }
         try {
             latch.await();
@@ -301,52 +311,6 @@ public class MosaicMaker {
         }
     }
 
-    private class ReadTask implements Runnable {
-
-        private CountDownLatch latch;
-        private List<File> files = new ArrayList<>();
-        private int w;
-        private int h;
-
-        public ReadTask(CountDownLatch latch, int w, int h) {
-            this.latch = latch;
-            this.w = w;
-            this.h = h;
-        }
-
-        public void add(File file) {
-            files.add(file);
-        }
-
-        @Override
-        public void run() {
-            for (File f : files) {
-
-                if (f.isFile()) {
-                    PuzzleUnit unit = null;
-                    try {
-                        BufferedImage bi  = ImageUtil.resize(ImageIO.read(f), w, h);
-                        String key = ImageUtil.calKey(bi, mode);
-                        bi = null;
-                        LogUtil.logProcess("读取文件中……",readImg.incrementAndGet(), dbSize);
-                        unit =  new PuzzleUnit(max, key, f.getAbsolutePath(), h, w);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if(null == unit){
-                        continue;
-                    }
-                    if(!tree.containsKey(unit.key)){
-                        tree.put(unit.key, Lists.newArrayList(unit));
-                    }else{
-                        tree.get(unit.key).add(unit);
-                    }
-
-                }
-            }
-            latch.countDown();
-        }
-    }
 
     /**
      * 计算子团尺寸
