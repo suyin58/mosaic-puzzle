@@ -36,32 +36,34 @@ public class MosaicMaker {
     private int subWidth = 64;
     //默认子图高
     private int subHeight = 64;
-    //粒度
-    private int unitMin;
     //成像方式
     private String mode;
     //默认生成图宽
     private int defaultW;
     //默认生成图高
     private int defaultH;
-    //每张素材最多出现的次数
+    //每张素材最多出现的次数 TODO ，自动计算
     private int max;
+
+    // 透明度 0~100
+    private int blend;
+
     //加载图库使用的线程数
     private int threadNum;
+
     private TreeMap<String,List<PuzzleUnit>> tree = new TreeMap();
 
     public MosaicMaker(String dbPath, String aimPath, String outPath) {
 
-        this(dbPath, aimPath, outPath, 64, 64, 5, Mode.RGB, 1920, 1080, 300, 4);
+        this(dbPath, aimPath, outPath, 64, 64, Mode.RGB, 1920, 1080, 300, 4);
     }
 
-    public MosaicMaker(String dbPath, String aimPath, String outPath, int subWidth, int subHeight, int unitMin, String mode, int defaultW, int defaultH, int max, int threadNum) {
+    public MosaicMaker(String dbPath, String aimPath, String outPath, int subWidth, int subHeight, String mode, int defaultW, int defaultH, int max, int threadNum) {
         this.dbPath = dbPath;
         this.aimPath = aimPath;
         this.outPath = outPath;
         this.subWidth = subWidth;
         this.subHeight = subHeight;
-        this.unitMin = unitMin;
         this.mode = mode;
         this.defaultW = defaultW;
         this.defaultH = defaultH;
@@ -109,14 +111,6 @@ public class MosaicMaker {
         this.subHeight = subHeight;
     }
 
-    public int getUnitMin() {
-        return unitMin;
-    }
-
-    public void setUnitMin(int unitMin) {
-        this.unitMin = unitMin;
-    }
-
     public String getMode() {
         return mode;
     }
@@ -147,6 +141,14 @@ public class MosaicMaker {
 
     public void setMax(int max) {
         this.max = max;
+    }
+
+    public int getBlend() {
+        return blend;
+    }
+
+    public void setBlend(int blend) {
+        this.blend = blend;
     }
 
     public int getThreadNum() {

@@ -16,20 +16,24 @@ public class ImageUtil {
     }
 
 
-
-    //透明
-    public static final BufferedImage blend(BufferedImage im1, BufferedImage im2, float a) {
-        int width = im1.getWidth();
-        int height = im1.getHeight();
+    /**
+     * 透明度
+     * @param target 需要做透明的图
+     * @param ref 参照图
+     * @param alpha 0～100
+     * @return
+     */
+    public static final BufferedImage blend(BufferedImage target, BufferedImage ref, int alpha) {
+        int width = target.getWidth();
+        int height = target.getHeight();
         //尺寸不一样则返回空
-        if (width != im2.getWidth() || height != im2.getHeight()) {
+        if (width != ref.getWidth() || height != ref.getHeight()) {
             return null;
         }
-        int alpha = (int) (a * 100);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                int pixel1 = im1.getRGB(x, y);
-                int pixel2 = im2.getRGB(x, y);
+                int pixel1 = target.getRGB(x, y);
+                int pixel2 = ref.getRGB(x, y);
                 int r1 = (pixel1 & 0xff0000) >> 16;
                 int g1 = (pixel1 & 0xff00) >> 8;
                 int b1 = (pixel1 & 0xff);
@@ -40,10 +44,10 @@ public class ImageUtil {
                 int g = ((100 - alpha) * g1 + alpha * g2) / 100;
                 int b = ((100 - alpha) * b1 + alpha * b2) / 100;
                 int rgb = Integer.valueOf(Integer.toHexString(r & 0xff) + Integer.toHexString(g & 0xff) + Integer.toHexString(b & 0xff), 16);
-                im1.setRGB(x, y, rgb);
+                target.setRGB(x, y, rgb);
             }
         }
-        return im1;
+        return target;
     }
 
     public static final BufferedImage resize(BufferedImage im, int w, int h) {

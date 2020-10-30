@@ -16,8 +16,8 @@ public class Main {
                 , "/Users/suyin/Documents/temp/target_rgb5.jpg");
         mosaicMaker.setMode(Mode.RGB);
         mosaicMaker.setMax(1);
-        mosaicMaker.setDefaultH(6720*3);
-        mosaicMaker.setDefaultW(4480*3);
+        mosaicMaker.setDefaultH(6720*2);
+        mosaicMaker.setDefaultW(4480*2);
         try {
             mosaicMaker.make();
         } catch (IOException e) {
