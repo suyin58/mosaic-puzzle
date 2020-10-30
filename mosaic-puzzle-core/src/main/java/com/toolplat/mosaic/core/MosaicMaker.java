@@ -20,6 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 马赛克 拼图
+ */
 public class MosaicMaker {
     //图库路径
     private String dbPath;
@@ -318,8 +321,8 @@ public class MosaicMaker {
 //        double d  = size * (h / (w * 1.0));
 //        subHeight = (int)d ;
         subWidth = w / 200;
-        if(subWidth > 60){
-            subWidth = 60;
+        if(subWidth > 80){
+            subWidth = 80;
         }
         subHeight = subWidth * 3/4 ;
     }

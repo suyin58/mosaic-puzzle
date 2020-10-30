@@ -4,6 +4,7 @@ import com.toolplat.mosaic.core.constant.Mode;
 
 
 /**
+ * 拼图最小粒子
  * @author suyin
  */
 public class PuzzleUnit implements Comparable<PuzzleUnit> {
