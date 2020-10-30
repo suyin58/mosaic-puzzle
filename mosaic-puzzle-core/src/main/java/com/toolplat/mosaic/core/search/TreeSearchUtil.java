@@ -93,7 +93,7 @@ public class TreeSearchUtil {
     private static BufferedImage getSelectBufferedImage(TreeMap<String, List<PuzzleUnit>> tree, String key,
                                                         List<PuzzleUnit> value) {
         Collections.shuffle(value);
-        Optional<PuzzleUnit> optional = value.stream().filter(it -> it.max > 0).findFirst();
+        Optional<PuzzleUnit> optional = value.stream().filter(it -> it.max > 1).findFirst();
         try {
             if (optional.isPresent()) {
                 optional.get().max--;
@@ -102,7 +102,7 @@ public class TreeSearchUtil {
                         optional.get().height);
             } else {
                 // 移除图片
-//            tree.remove(key);
+//                tree.remove(key);
                 return ImageUtil.resize(ImageIO.read(new File(value.get(0).filePath)), value.get(0).width,
                         value.get(0).height);
             }
@@ -112,61 +112,5 @@ public class TreeSearchUtil {
     }
 
 
-    public static final String calKey(BufferedImage image, String mode) {
-        switch (mode) {
-            case Mode.GRAY:
-                return "" + calAvgGRAY(image);
-            case Mode.RGB:
-                float[] res = calAvgRGB(image);
-                return res[0] + "-" + res[1] + "-" + res[2];
-            case Mode.PHASH:
-                return PHashUtil.getFeatureValue(image);
-            default:
-                return "";
-        }
-    }
-
-    //计算平均灰度
-    private static double calAvgGRAY(BufferedImage image) {
-        int w = image.getWidth();
-        int h = image.getHeight();
-        double avgGray = 0.f;
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
-                int pixel = image.getRGB(x, y);
-                int r = (pixel & 0xff0000) >> 16;
-                int g = (pixel & 0xff00) >> 8;
-                int b = (pixel & 0xff);
-//                avgGray += (77 * r + 150 * g + 29 * b + 128);
-                avgGray += (0.299 * r + 0.597 * g + 0.114 * b);
-            }
-        }
-        return avgGray / (w * h);
-    }
-
-    //计算平均rgb
-    private static float[] calAvgRGB(BufferedImage image) {
-        int w = image.getWidth();
-        int h = image.getHeight();
-        float[] res = new float[3];
-        float avgR = 0.f;
-        float avgG = 0.f;
-        float avgB = 0.f;
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
-                int pixel = image.getRGB(x, y);
-                int r = (pixel & 0xff0000) >> 16;
-                int g = (pixel & 0xff00) >> 8;
-                int b = (pixel & 0xff);
-                avgR += r;
-                avgG += g;
-                avgB += b;
-            }
-        }
-        res[0] = avgR / (w * h);
-        res[1] = avgG / (w * h);
-        res[2] = avgB / (w * h);
-        return res;
-    }
 
 }
