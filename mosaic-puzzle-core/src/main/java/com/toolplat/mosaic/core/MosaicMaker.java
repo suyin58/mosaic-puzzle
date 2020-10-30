@@ -33,19 +33,19 @@ public class MosaicMaker {
     //图片输出路径
     private String outPath;
     //默认子图宽
-    private int subWidth = 64;
+    private int unitW = 64;
     //默认子图高
-    private int subHeight = 64;
+    private int unitH = 64;
     //成像方式
     private String mode;
     //默认生成图宽
-    private int defaultW;
+    private int targetW;
     //默认生成图高
-    private int defaultH;
+    private int targetH;
     //每张素材最多出现的次数 TODO ，自动计算
     private int max;
 
-    // 透明度 0~100
+    // 透明度 0~100 // TODO 落到每张图片自动计算透明度 -- 根据图片的平均差异度
     private int blend;
 
     //加载图库使用的线程数
@@ -58,15 +58,15 @@ public class MosaicMaker {
         this(dbPath, aimPath, outPath, 64, 64, Mode.RGB, 1920, 1080, 300, 4);
     }
 
-    public MosaicMaker(String dbPath, String aimPath, String outPath, int subWidth, int subHeight, String mode, int defaultW, int defaultH, int max, int threadNum) {
+    public MosaicMaker(String dbPath, String aimPath, String outPath, int unitW, int unitH, String mode, int targetW, int targetH, int max, int threadNum) {
         this.dbPath = dbPath;
         this.aimPath = aimPath;
         this.outPath = outPath;
-        this.subWidth = subWidth;
-        this.subHeight = subHeight;
+        this.unitW = unitW;
+        this.unitH = unitH;
         this.mode = mode;
-        this.defaultW = defaultW;
-        this.defaultH = defaultH;
+        this.targetW = targetW;
+        this.targetH = targetH;
         this.max = max;
         this.threadNum = threadNum;
     }
@@ -95,20 +95,20 @@ public class MosaicMaker {
         this.outPath = outPath;
     }
 
-    public int getSubWidth() {
-        return subWidth;
+    public int getUnitW() {
+        return unitW;
     }
 
-    public void setSubWidth(int subWidth) {
-        this.subWidth = subWidth;
+    public void setUnitW(int unitW) {
+        this.unitW = unitW;
     }
 
-    public int getSubHeight() {
-        return subHeight;
+    public int getUnitH() {
+        return unitH;
     }
 
-    public void setSubHeight(int subHeight) {
-        this.subHeight = subHeight;
+    public void setUnitH(int unitH) {
+        this.unitH = unitH;
     }
 
     public String getMode() {
@@ -119,20 +119,20 @@ public class MosaicMaker {
         this.mode = mode;
     }
 
-    public int getDefaultW() {
-        return defaultW;
+    public int getTargetW() {
+        return targetW;
     }
 
-    public void setDefaultW(int defaultW) {
-        this.defaultW = defaultW;
+    public void setTargetW(int targetW) {
+        this.targetW = targetW;
     }
 
-    public int getDefaultH() {
-        return defaultH;
+    public int getTargetH() {
+        return targetH;
     }
 
-    public void setDefaultH(int defaultH) {
-        this.defaultH = defaultH;
+    public void setTargetH(int targetH) {
+        this.targetH = targetH;
     }
 
     public int getMax() {
@@ -169,7 +169,7 @@ public class MosaicMaker {
         File aimFile = new File(aimPath);
         BufferedImage aimIm = ImageIO.read(aimFile);
         //使用默认尺寸
-        aimIm = ImageUtil.resize(aimIm, defaultW, defaultH);
+        aimIm = ImageUtil.resize(aimIm, targetW, targetH);
         int aimWidth = aimIm.getWidth();
         int aimHeight = aimIm.getHeight();
         // 计算单元大小
@@ -183,8 +183,8 @@ public class MosaicMaker {
         int height = aimIm.getHeight();
         BufferedImage newIm = new BufferedImage(width, height, aimIm.getType());
         Graphics2D g = newIm.createGraphics();
-        int w = width / subWidth;
-        int h = height / subHeight;
+        int w = width / unitW;
+        int h = height / unitH;
         System.out.println("拼图共需要" + (w * w) + "张图片，目前读取"+readImg.get()+"张,重复率"+((w * 1.0 * w) / readImg.get()));
         readImg = new AtomicInteger(0);
         long start = System.currentTimeMillis();
@@ -195,12 +195,15 @@ public class MosaicMaker {
             pool.execute(() -> {
                 for (int j = 0; j < h; j++) {
 //                    System.out.printf("正在拼第%d张图片\n", (finalI + 1) * (j + 1));
-                    int x = finalI * subWidth;
-                    int y = j * subHeight;
-                    BufferedImage curAimSubIm = aimIm.getSubimage(x, y, subWidth, subHeight);
+                    int x = finalI * unitW;
+                    int y = j * unitH;
+                    BufferedImage curAimSubIm = aimIm.getSubimage(x, y, unitW, unitH);
                     BufferedImage fitSubIm = findFitIm(curAimSubIm);
+                    if(blend != 0 ){
+                        fitSubIm = ImageUtil.blend(fitSubIm, curAimSubIm, blend);
+                    }
                     LogUtil.logProcess("图片绘制中……", readImg.incrementAndGet() ,w * h);
-                    g.drawImage(fitSubIm, x, y, subWidth, subHeight, null);
+                    g.drawImage(fitSubIm, x, y, unitW, unitH, null);
                 }
                 latch.countDown();
             });
@@ -246,7 +249,7 @@ public class MosaicMaker {
             if (files[i].isFile()) {
                 int index = i % threadNum;
                 if (readTask[index] == null) {
-                    ReadTask rt = new ReadTask(latch, subWidth, subHeight);
+                    ReadTask rt = new ReadTask(latch, unitW, unitH);
                     readTask[index] = rt;
                 }
                 readTask[index].add(files[i]);
@@ -322,11 +325,11 @@ public class MosaicMaker {
 //        subWidth = size;
 //        double d  = size * (h / (w * 1.0));
 //        subHeight = (int)d ;
-        subWidth = w / 200;
-        if(subWidth > 80){
-            subWidth = 80;
+        unitW = w / 200;
+        if(unitW > 80){
+            unitW = 80;
         }
-        subHeight = subWidth * 3/4 ;
+        unitH = unitW * 3/4 ;
     }
 
 }
