@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.toolplat.mosaic.ui.contoroller.MainUIController">
+   <children>
+      <Pane prefHeight="230.0" prefWidth="380.0" />
+   </children>
+</AnchorPane>

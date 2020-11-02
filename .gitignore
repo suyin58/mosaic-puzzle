@@ -1,3 +1,4 @@
 /.idea/
 /target/
 /mosaic-puzzle-core/target/
+/mosaic-puzzle-ui/src/test/

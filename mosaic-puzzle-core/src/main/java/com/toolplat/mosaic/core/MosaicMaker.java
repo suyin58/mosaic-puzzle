@@ -207,14 +207,13 @@ public class MosaicMaker {
 
         LogUtil.log("开始读取图片");
         readAllImage();
-        LogUtil.log("共读取" + readImg.get() + "张图片");
-        LogUtil.log("读取图库完成，耗时" + watch.elapsed(TimeUnit.SECONDS) + "秒");
-        LogUtil.log("拼图共需要" + (w * h) + "张图片，目前读取"+readImg.get()+"张,重复率"+((w * 1.0 * w) / readImg.get()));
-        core(aimIm);
+        LogUtil.log("读取图库完成共读取" + readImg.get() + "张图片，耗时" + watch.elapsed(TimeUnit.SECONDS) + "秒");
+        LogUtil.log("拼图开始共需要" + (w * h) + "张图片，目前读取"+readImg.get()+"张,预计重复率"+((w * 1.0 * w) / readImg.get()));
+        drawNewImage(aimIm);
         LogUtil.log("拼图完成，耗时" + watch.elapsed(TimeUnit.SECONDS) + "秒");
     }
 
-    private void core(BufferedImage aimIm) throws IOException {
+    private void drawNewImage(BufferedImage aimIm) throws IOException {
         int width = aimIm.getWidth();
         int height = aimIm.getHeight();
         int w = width / unitW;
@@ -227,7 +226,6 @@ public class MosaicMaker {
         CountDownLatch latch = new CountDownLatch(w * h);
         for (int i = 0; i < w; i++) {
             int finalI = i;
-
             for (int j = 0; j < h; j++) {
                 int finalJ = j;
                 pool.execute(() -> {
