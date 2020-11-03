@@ -15,11 +15,12 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -278,12 +279,12 @@ public class MosaicMaker {
         Graphics2D g = newIm.createGraphics();
         readImg = new AtomicInteger(0);
         ExecutorService pool = Executors.newFixedThreadPool(threadNum);
-        CountDownLatch latch = new CountDownLatch(w * h);
+        List<Future> fList = new ArrayList<>();
         for (int i = 0; i < w; i++) {
             int finalI = i;
             for (int j = 0; j < h; j++) {
                 int finalJ = j;
-                pool.execute(() -> {
+                Future f = pool.submit(() -> {
                     int x = finalI * unitW;
                     int y = finalJ * unitH;
                     BufferedImage curAimSubIm = aimIm.getSubimage(x, y, unitW, unitH);
@@ -295,19 +296,19 @@ public class MosaicMaker {
                     LogUtil.logProcess("图片绘制中……", n, w * h);
                     LogUtil.showProcess(writeProcess, n, w * h);
                     g.drawImage(fitSubIm, x, y, unitW, unitH, null);
-                    latch.countDown();
                 });
+                fList.add(f);
             }
         }
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.err.println("计数器抛异常:");
-        } finally {
-            pool.shutdown();
+        for (Future f : fList) {
+            try {
+                f.get();
+            } catch (Exception e) {
+                LogUtil.log("计数器抛异常:", e);
+            } finally {
+                pool.shutdown();
+            }
         }
-
         return newIm;
     }
 
@@ -332,9 +333,9 @@ public class MosaicMaker {
         File dir = new File(this.dbPath);
         File[] files = dir.listFiles();
         ExecutorService pool = Executors.newFixedThreadPool(threadNum);
-        CountDownLatch latch = new CountDownLatch(files.length);
+        List<Future> fList = new ArrayList<>();
         for (File file : files) {
-            pool.execute(() -> {
+            Future f = pool.submit(() -> {
                 if (file.isFile()) {
                     PuzzleUnit unit = null;
                     try {
@@ -346,7 +347,7 @@ public class MosaicMaker {
                         LogUtil.showProcess(readProcess, n, dbSize);
                         unit = new PuzzleUnit(max, key, file.getAbsolutePath(), unitW, unitH);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LogUtil.log("图片读取异常，", e);
                     }
                     if (null != unit) {
                         if (!tree.containsKey(unit.key)) {
@@ -356,16 +357,17 @@ public class MosaicMaker {
                         }
                     }
                 }
-                latch.countDown();
             });
-
+            fList.add(f);
         }
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            pool.shutdown();
+        for (Future f : fList) {
+            try {
+                f.get();
+            } catch (Exception e) {
+                LogUtil.log("", e);
+            } finally {
+                pool.shutdown();
+            }
         }
     }
 

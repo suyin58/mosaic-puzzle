@@ -82,7 +82,7 @@ public class MainUIController extends BaseFXController {
     @FXML
     private ImageView sponsorImg;
 
-    static BufferedImage image = null;
+    BufferedImage image = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -169,21 +169,27 @@ public class MainUIController extends BaseFXController {
             mosaicMaker.setWriteProcess(writeProcess);
 
             new Thread(() -> {
-                btnRun.setDisable(true);
-                console.setVisible(true);
+                Platform.runLater(()->{
+                    btnRun.setDisable(true);
+                    console.setVisible(true);
+                });
                 try {
                     image = mosaicMaker.make();
                     targetImg.setImage(SwingFXUtils.toFXImage(image, null));
-
+                    System.out.println("绘制结束1");
                     // targetImg.setFitHeight(targetImgPane.getWidth());
                     zoomSlider.setValue(targetImgPane.getWidth() / image.getWidth() * 100);
                     zoomSlider.setValueChanging(true);
+
+                    System.out.println("绘制结束2");
                 } catch (IOException e) {
                     e.printStackTrace();
                     AlertUtil.showErrorAlert(e.getMessage());
                 }finally {
-                    btnRun.setDisable(false);
-                    console.setVisible(false);
+                    Platform.runLater(()-> {
+                        btnRun.setDisable(false);
+                        console.setVisible(false);
+                    });
                 }
             }).start();
         } catch (Exception e) {
@@ -223,6 +229,7 @@ public class MainUIController extends BaseFXController {
             readProcess.setProgress(0);
             writeProcess.setProgress(0);
             zoomSlider.setValue(0);
+            image = null;
         });
     }
 
