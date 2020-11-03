@@ -1,6 +1,8 @@
 package com.toolplat.mosaic.ui.contoroller;
 
 import com.google.common.collect.Lists;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGImageDecoder;
 import com.toolplat.mosaic.core.MosaicMaker;
 import com.toolplat.mosaic.core.util.ImageUtil;
 import com.toolplat.mosaic.ui.util.AlertUtil;
@@ -20,10 +22,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import okhttp3.Call;
+import okhttp3.OkHttp;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
@@ -87,7 +95,20 @@ public class MainUIController extends BaseFXController {
 
         mode.getSelectionModel().selectFirst();
 
+        // 使用说明
         readme.setText("马赛克拼图软件使用说明: \n 1. 选择目录");
+
+        // 微信图片
+        String qrWeChat = "https://raw.githubusercontent.com/suyin58/mosaic-puzzle/main/mosaic-puzzle-ui/src/main/resources/fxml/qrcode_weichat.jpg";
+        String qrAlipay = "https://raw.githubusercontent.com/suyin58/mosaic-puzzle/main/mosaic-puzzle-ui/src/main/resources/fxml/qrcode_alipay.jpg";
+        Image imageWeChat = loadWebUrl(qrWeChat);
+        Image imageAlipay = loadWebUrl(qrAlipay);
+        if(null != imageWeChat){
+            followImg.setImage(imageWeChat);
+        }
+        if(null != imageAlipay){
+            sponsorImg.setImage(imageAlipay);
+        }
     }
 
     @FXML
@@ -165,15 +186,6 @@ public class MainUIController extends BaseFXController {
 
     }
 
-    private void clear() {
-        Platform.runLater(() -> {
-            targetImg.setImage(null);
-            readProcess.setProgress(0);
-            writeProcess.setProgress(0);
-            zoomSlider.setValue(0);
-        });
-    }
-
     @FXML
     public void save(ActionEvent actionEvent) {
 
@@ -195,5 +207,37 @@ public class MainUIController extends BaseFXController {
             }
         }
     }
+
+
+    private void clear() {
+        Platform.runLater(() -> {
+            targetImg.setImage(null);
+            readProcess.setProgress(0);
+            writeProcess.setProgress(0);
+            zoomSlider.setValue(0);
+        });
+    }
+
+    private Image loadWebUrl(String url) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+//                .headers(getBaiduHeader())
+                .get()
+                .url(url)
+                .build();
+
+        Call call = client.newCall(request);
+        //同步调用,返回Response,会抛出IO异常
+        try {
+            Response response = call.execute();
+            JPEGImageDecoder decoderFile = JPEGCodec.createJPEGDecoder(response.body().byteStream());
+            BufferedImage image = decoderFile.decodeAsBufferedImage();
+            SwingFXUtils.toFXImage(image, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 }
