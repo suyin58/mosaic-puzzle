@@ -62,8 +62,7 @@
                             <HBox alignment="CENTER_LEFT" layoutX="214.0" layoutY="148.0">
                                 <children>
                                     <Label text="生成图片宽度（像素）" />
-                                    <TextField fx:id="targetW" minHeight="27.0" minWidth="250.0"
-                                               promptText="生成图片宽度，按厘米计算，长度按目标图片等比处理" text="10240">
+                                    <TextField fx:id="targetW" minHeight="27.0" minWidth="250.0" promptText="生成图片宽度，按厘米计算，长度按目标图片等比处理" text="10240">
                                         <HBox.margin>
                                             <Insets left="5.0" right="5.0" />
                                         </HBox.margin>
@@ -79,7 +78,7 @@
 
                                     </ImageView>
                                 </ScrollPane>
-                                <TextArea fx:id="console" visible="false" prefHeight="336.0" prefWidth="701.0" />
+                                <TextArea fx:id="console" prefHeight="336.0" prefWidth="701.0" visible="false" />
                             </children>
                         </AnchorPane>
                         <AnchorPane minHeight="95.0" minWidth="160.0" prefHeight="95.0" prefWidth="700.0">
@@ -105,11 +104,13 @@
                         </AnchorPane>
 
                         <AnchorPane minHeight="100.0" minWidth="160.0">
-                            <Label text="微信公众号二维码" />
+                            <Label text="关注微信公众号获取更多有趣工具" />
+                            <ImageView fx:id="followImg" fitHeight="170.0" fitWidth="170.0" layoutX="18.0" layoutY="22.0" />
                         </AnchorPane>
 
                         <AnchorPane minHeight="100.0" minWidth="160.0">
-                            <Label text="支付宝收款码" />
+                            <Label text="创作不易，感谢打赏" />
+                            <ImageView fx:id="sponsorImg" fitHeight="170.0" fitWidth="170.0" layoutX="16.0" layoutY="32.0" />
                         </AnchorPane>
                     </items>
                 </SplitPane>

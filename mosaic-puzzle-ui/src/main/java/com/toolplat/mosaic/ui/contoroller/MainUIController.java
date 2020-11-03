@@ -98,9 +98,11 @@ public class MainUIController extends BaseFXController {
         // 使用说明
         readme.setText("马赛克拼图软件使用说明: \n 1. 选择目录");
 
-        // 微信图片
-        String qrWeChat = "https://raw.githubusercontent.com/suyin58/mosaic-puzzle/main/mosaic-puzzle-ui/src/main/resources/fxml/qrcode_weichat.jpg";
-        String qrAlipay = "https://raw.githubusercontent.com/suyin58/mosaic-puzzle/main/mosaic-puzzle-ui/src/main/resources/fxml/qrcode_alipay.jpg";
+        // 图片
+        followImg = new ImageView("image/qrcode_weichat.jpg");
+        sponsorImg = new ImageView("image/qrcode_alipay.jpg");
+        String qrWeChat = "https://raw.githubusercontent.com/suyin58/mosaic-puzzle/main/mosaic-puzzle-ui/src/main/resources/image/qrcode_weichat.jpg";
+        String qrAlipay = "https://raw.githubusercontent.com/suyin58/mosaic-puzzle/main/mosaic-puzzle-ui/src/main/resources/image/qrcode_alipay.jpg";
         Image imageWeChat = loadWebUrl(qrWeChat);
         Image imageAlipay = loadWebUrl(qrAlipay);
         if(null != imageWeChat){
@@ -232,7 +234,7 @@ public class MainUIController extends BaseFXController {
             Response response = call.execute();
             JPEGImageDecoder decoderFile = JPEGCodec.createJPEGDecoder(response.body().byteStream());
             BufferedImage image = decoderFile.decodeAsBufferedImage();
-            SwingFXUtils.toFXImage(image, null);
+            return SwingFXUtils.toFXImage(image, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
