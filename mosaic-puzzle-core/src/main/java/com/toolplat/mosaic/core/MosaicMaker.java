@@ -237,7 +237,12 @@ public class MosaicMaker {
         if(targetH == 0){
             targetH = targetW * aimIm.getHeight() / aimIm.getWidth();
         }
-        aimIm = ImageUtil.resize(aimIm, targetW, targetH);
+        try {
+            aimIm = ImageUtil.resize(aimIm, targetW, targetH);
+        } catch (Exception e){
+            LogUtil.log("异常：", e);
+            throw e;
+        }
         int aimWidth = aimIm.getWidth();
         int aimHeight = aimIm.getHeight();
         // 计算单元大小

@@ -173,13 +173,8 @@ public class ImageUtil {
         return (sr + sb + sg) / 3;
     }
 
-    public static final BufferedImage resize(BufferedImage im, int w, int h) {
-        try {
-            return Thumbnails.fromImages(Lists.newArrayList(im)).size(w, h).keepAspectRatio(false).asBufferedImage();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static final BufferedImage resize(BufferedImage im, int w, int h) throws IOException {
+        return Thumbnails.fromImages(Lists.newArrayList(im)).size(w, h).keepAspectRatio(false).asBufferedImage();
     }
 
 }
