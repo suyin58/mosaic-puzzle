@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class MainUIController extends BaseFXController {
 
@@ -99,8 +100,8 @@ public class MainUIController extends BaseFXController {
         readme.setText("马赛克拼图软件使用说明: \n 1. 选择目录");
 
         // 图片
-        followImg = new ImageView("image/qrcode_weichat.jpg");
-        sponsorImg = new ImageView("image/qrcode_alipay.jpg");
+        followImg.setImage(new ImageView("image/qrcode_weichat.jpg").getImage());
+        sponsorImg.setImage( new ImageView("image/qrcode_alipay.jpg").getImage());
         String qrWeChat = "https://raw.githubusercontent.com/suyin58/mosaic-puzzle/main/mosaic-puzzle-ui/src/main/resources/image/qrcode_weichat.jpg";
         String qrAlipay = "https://raw.githubusercontent.com/suyin58/mosaic-puzzle/main/mosaic-puzzle-ui/src/main/resources/image/qrcode_alipay.jpg";
         Image imageWeChat = loadWebUrl(qrWeChat);
@@ -221,7 +222,10 @@ public class MainUIController extends BaseFXController {
     }
 
     private Image loadWebUrl(String url) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client =  new OkHttpClient.Builder()
+                .connectTimeout(100, TimeUnit.MILLISECONDS)
+                .readTimeout(500, TimeUnit.MILLISECONDS)
+                .build();
         Request request = new Request.Builder()
 //                .headers(getBaiduHeader())
                 .get()
@@ -235,7 +239,7 @@ public class MainUIController extends BaseFXController {
             JPEGImageDecoder decoderFile = JPEGCodec.createJPEGDecoder(response.body().byteStream());
             BufferedImage image = decoderFile.decodeAsBufferedImage();
             return SwingFXUtils.toFXImage(image, null);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
