@@ -3,6 +3,10 @@
 - 代码启动路径：mosaic-puzzle-core/com.toolplat.mosaic.core.Main.java
 - GUI 启动路径：mosaic-puzzle-ui/com.toolplat.mosaic.ui.MainUI.java
 
+-- GUI页面
+
+![](https://raw.githubusercontent.com/suyin58/mosaic-puzzle/main/mosaic-puzzle-core/src/main/resources/gui_done.jpg)
+
 -- 原图 
 
 ![](https://raw.githubusercontent.com/suyin58/mosaic-puzzle/main/mosaic-puzzle-core/src/main/resources/source.png)
