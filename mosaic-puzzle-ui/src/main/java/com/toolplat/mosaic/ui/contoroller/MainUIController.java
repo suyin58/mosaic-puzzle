@@ -1,8 +1,6 @@
 package com.toolplat.mosaic.ui.contoroller;
 
 import com.google.common.collect.Lists;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageDecoder;
 import com.toolplat.mosaic.core.MosaicMaker;
 import com.toolplat.mosaic.core.util.ImageUtil;
 import com.toolplat.mosaic.ui.util.AlertUtil;
@@ -23,11 +21,11 @@ import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import okhttp3.Call;
-import okhttp3.OkHttp;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -248,8 +246,7 @@ public class MainUIController extends BaseFXController {
         //同步调用,返回Response,会抛出IO异常
         try {
             Response response = call.execute();
-            JPEGImageDecoder decoderFile = JPEGCodec.createJPEGDecoder(response.body().byteStream());
-            BufferedImage image = decoderFile.decodeAsBufferedImage();
+            BufferedImage image = ImageIO.read(response.body().byteStream());;
             return SwingFXUtils.toFXImage(image, null);
         } catch (Exception e) {
             e.printStackTrace();
