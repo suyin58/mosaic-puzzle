@@ -1,7 +1,7 @@
 package com.toolplat.mosaic.core.constant;
 
 /**
- * Created by Clanner on 2018/10/7.
+ * @author suyin
  */
 public class Mode {
     public static final String RGB = "RGB";

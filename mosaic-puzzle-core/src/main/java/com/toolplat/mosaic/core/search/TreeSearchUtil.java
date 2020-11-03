@@ -16,6 +16,13 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 public class TreeSearchUtil {
+
+    /**
+     * 按照灰度值取相似数据
+     * @param tree
+     * @param key
+     * @return
+     */
     public static BufferedImage getColseByGray(TreeMap<String, List<PuzzleUnit>> tree, String key) {
 
         Map.Entry<String,List<PuzzleUnit>> low = tree.floorEntry(key);
@@ -90,6 +97,13 @@ public class TreeSearchUtil {
         return getSelectBufferedImage(tree, result, list);
     }
 
+    /**
+     * 相似图中，随机获取一张图片，减少图片重复使用概率
+     * @param tree
+     * @param key
+     * @param value
+     * @return
+     */
     private static BufferedImage getSelectBufferedImage(TreeMap<String, List<PuzzleUnit>> tree, String key,
                                                         List<PuzzleUnit> value) {
         Collections.shuffle(value);
@@ -101,7 +115,7 @@ public class TreeSearchUtil {
                 return ImageUtil.resize(ImageIO.read(new File(optional.get().filePath)), optional.get().width,
                         optional.get().height);
             } else {
-                // 移除图片
+                // 移除图片，配合sync使用，实测效果不好
 //                tree.remove(key);
                 return ImageUtil.resize(ImageIO.read(new File(value.get(0).filePath)), value.get(0).width,
                         value.get(0).height);

@@ -73,6 +73,12 @@ public class ImageUtil {
     }
 
 
+    /**
+     * 计算key值，用于存放treeMap中便于搜索
+     * @param image
+     * @param mode
+     * @return
+     */
     public static final String calKey(BufferedImage image, String mode) {
         switch (mode) {
             case Mode.GRAY:
@@ -87,7 +93,11 @@ public class ImageUtil {
         }
     }
 
-    //计算平均灰度
+    /**
+     * 平均灰度
+     * @param image
+     * @return
+     */
     private static double calAvgGRAY(BufferedImage image) {
         int w = image.getWidth();
         int h = image.getHeight();
@@ -104,7 +114,11 @@ public class ImageUtil {
         return avgGray / (w * h);
     }
 
-    //计算平均rgb
+    /**
+     * 计算平均rgb
+     * @param image
+     * @return
+     */
     private static float[] calAvgRGB(BufferedImage image) {
         int w = image.getWidth();
         int h = image.getHeight();
@@ -160,8 +174,6 @@ public class ImageUtil {
     }
 
     public static final BufferedImage resize(BufferedImage im, int w, int h) {
-
-
         try {
             return Thumbnails.fromImages(Lists.newArrayList(im)).size(w, h).keepAspectRatio(false).asBufferedImage();
         } catch (IOException e) {

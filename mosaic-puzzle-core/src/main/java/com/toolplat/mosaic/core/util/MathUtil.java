@@ -1,10 +1,7 @@
 package com.toolplat.mosaic.core.util;
 
-import java.awt.image.BufferedImage;
 
 public class MathUtil {
-
-
 
     /**
      * 传入一个数列x计算平均值

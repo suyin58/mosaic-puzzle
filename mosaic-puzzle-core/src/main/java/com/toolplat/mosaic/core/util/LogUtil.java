@@ -67,7 +67,11 @@ public class LogUtil {
         log(msg + getStackTraceString(e));
     }
 
-    //打印异常堆栈信息
+    /**
+     * 打印异常堆栈信息
+     * @param ex
+     * @return
+     */
     public static String getStackTraceString(Throwable ex) {//(Exception ex) {
         StackTraceElement[] traceElements = ex.getStackTrace();
 

@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * 从百度下载图片测试使用
+ * @author suyin
  */
 public class ImageBaiduCom {
 

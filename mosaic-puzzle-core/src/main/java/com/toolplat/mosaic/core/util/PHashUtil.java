@@ -6,6 +6,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * java PHash（图片相似度） 算法实现
+ */
 public class PHashUtil {
     public static void main(String[] args) {
         String hash1 = getFeatureValue("/Users/suyin/Documents/temp/avatar/2bbfd66d-abd4-488d-955b-a909e5c86594.png");

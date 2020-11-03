@@ -13,12 +13,18 @@ public class PuzzleUnit implements Comparable<PuzzleUnit> {
      */
     public int max;
     /**
-     * rgb/gray
+     * rgb/gray/phash
      */
     public String mode;
+
+    /**
+     * 提供图片对比的key
+     */
     public String key;
 
-
+    /**
+     * 存放图片路径，减少内存使用。（ps：对应CPU会频繁一些）
+     */
     public String filePath;
     public int height;
     public int width;
