@@ -6,6 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane minHeight="558.0" minWidth="914.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.toolplat.mosaic.ui.contoroller.MainUIController">
     <children>
@@ -14,6 +15,12 @@
                 <SplitPane dividerPositions="0.34172661870503596, 0.9064748201438849" minHeight="200.0" minWidth="160.0" orientation="VERTICAL">
                     <items>
                         <AnchorPane minHeight="100.0" minWidth="160.0">
+
+                            <Label layoutX="68.0" layoutY="8.0" text="超实用马赛克拼图生成程序">
+                                <font>
+                                    <Font size="30.0" />
+                                </font>
+                            </Label>
                             <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="38.0" minHeight="51.0" minWidth="683.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3">
                                 <children>
                                     <Label text="图片目录" GridPane.rowIndex="3" />
@@ -100,7 +107,7 @@
 
                         <AnchorPane minHeight="100.0" prefWidth="160.0">
 
-                            <Label fx:id="readme" text="马赛克拼图软件" />
+                            <Label fx:id="readme" prefWidth="160" text="马赛克拼图软件" wrapText="true" />
                         </AnchorPane>
 
                         <AnchorPane minHeight="100.0" minWidth="160.0">

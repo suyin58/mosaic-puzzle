@@ -97,7 +97,12 @@ public class MainUIController extends BaseFXController {
         mode.getSelectionModel().selectFirst();
 
         // 使用说明
-        readme.setText("马赛克拼图软件使用说明: \n 1. 选择目录");
+        readme.setText("马赛克拼图软件使用说明: \n " +
+                "1. 选择图片目录，图片数量越多越好. \n" +
+                "2. 选择需要的参照图片. \n " +
+                "3. 设置生成的图片是灰色(GRAY)或者是彩色(RGB). \n" +
+                "4. 点击开始运行. \n" +
+                "5. 运行结束，保存图片");
 
         // 图片
         followImg.setImage(new ImageView("image/qrcode_weichat.jpg").getImage());
