@@ -1,6 +1,7 @@
 package com.toolplat.mosaic.core;
 
 import com.toolplat.mosaic.core.constant.Mode;
+import com.toolplat.mosaic.core.util.ImageUtil;
 
 import java.io.IOException;
 
@@ -11,10 +12,12 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
+
+        String outPath = "/Users/suyin/Documents/temp/target_gray7.jpg";
+
         MosaicMaker mosaicMaker = new MosaicMaker("/Users/suyin/Documents/temp/avatar/"
-                , "/Users/suyin/Documents/temp/source.png"
-                , "/Users/suyin/Documents/temp/target_gray6.jpg");
-        mosaicMaker.setMode(Mode.RGB);
+                , "/Users/suyin/Documents/temp/source.png");
+        mosaicMaker.setMode(Mode.GRAY);
         // 并发数
         final int nThreads = Runtime.getRuntime().availableProcessors();
         mosaicMaker.setThreadNum(nThreads);
@@ -26,7 +29,8 @@ public class Main {
         mosaicMaker.setTargetH(4480*2);
         mosaicMaker.setTargetW(6720*2);
         try {
-            mosaicMaker.make();
+
+            ImageUtil.save(mosaicMaker.make(), outPath);
         } catch (IOException e) {
             e.printStackTrace();
         }

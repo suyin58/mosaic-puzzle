@@ -7,6 +7,8 @@ import com.toolplat.mosaic.core.domain.PuzzleUnit;
 import com.toolplat.mosaic.core.search.TreeSearchUtil;
 import com.toolplat.mosaic.core.util.ImageUtil;
 import com.toolplat.mosaic.core.util.LogUtil;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextArea;
 
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
@@ -37,10 +39,6 @@ public class MosaicMaker {
      * 目标图片路径
      */
     private String aimPath;
-    /**
-     * 图片输出路径
-     */
-    private String outPath;
     /**
      * 默认子图宽
      */
@@ -76,17 +74,32 @@ public class MosaicMaker {
      */
     private int threadNum;
 
+
+    /**
+     * 读取进度条
+     */
+    private ProgressIndicator readProcess;
+
+    /**
+     * 绘制进度条
+     */
+    private ProgressIndicator writeProcess;
+
+    /**
+     * 控制台
+     */
+    private TextArea console;
+
     private TreeMap<String,List<PuzzleUnit>> tree = new TreeMap();
 
-    public MosaicMaker(String dbPath, String aimPath, String outPath) {
+    public MosaicMaker(String dbPath, String aimPath) {
 
-        this(dbPath, aimPath, outPath, 64, 64, Mode.RGB, 1920, 1080, 300, 4);
+        this(dbPath, aimPath, 64, 64, Mode.RGB, 1920, 0, 300, 4);
     }
 
-    public MosaicMaker(String dbPath, String aimPath, String outPath, int unitW, int unitH, String mode, int targetW, int targetH, int max, int threadNum) {
+    public MosaicMaker(String dbPath, String aimPath,int unitW, int unitH, String mode, int targetW, int targetH, int max, int threadNum) {
         this.dbPath = dbPath;
         this.aimPath = aimPath;
-        this.outPath = outPath;
         this.unitW = unitW;
         this.unitH = unitH;
         this.mode = mode;
@@ -110,14 +123,6 @@ public class MosaicMaker {
 
     public void setAimPath(String aimPath) {
         this.aimPath = aimPath;
-    }
-
-    public String getOutPath() {
-        return outPath;
-    }
-
-    public void setOutPath(String outPath) {
-        this.outPath = outPath;
     }
 
     public int getUnitW() {
@@ -184,16 +189,50 @@ public class MosaicMaker {
         this.threadNum = threadNum;
     }
 
+    public TextArea getConsole() {
+        return console;
+    }
 
-    public void make() throws IOException {
+    public void setConsole(TextArea console) {
+        LogUtil.console = console;
+        this.console = console;
+    }
+
+    public ProgressIndicator getReadProcess() {
+        return readProcess;
+    }
+
+    public void setReadProcess(ProgressIndicator readProcess) {
+        this.readProcess = readProcess;
+    }
+
+    public ProgressIndicator getWriteProcess() {
+        return writeProcess;
+    }
+
+    public void setWriteProcess(ProgressIndicator writeProcess) {
+        this.writeProcess = writeProcess;
+    }
+
+    public BufferedImage make() throws IOException {
         Stopwatch watch = Stopwatch.createStarted();
         File dbFile = new File(dbPath);
+
+        checkParam();
+
         File[] dbFiles = dbFile.listFiles();
+
         dbSize = dbFiles.length;
 
         File aimFile = new File(aimPath);
         BufferedImage aimIm = ImageIO.read(aimFile);
         //使用默认尺寸
+        if(targetW == 0){
+            throw new IllegalArgumentException("生成的图片宽度未设置");
+        }
+        if(targetH == 0){
+            targetH = targetW * aimIm.getHeight() / aimIm.getWidth();
+        }
         aimIm = ImageUtil.resize(aimIm, targetW, targetH);
         int aimWidth = aimIm.getWidth();
         int aimHeight = aimIm.getHeight();
@@ -209,11 +248,27 @@ public class MosaicMaker {
         readAllImage();
         LogUtil.log("读取图库完成共读取" + readImg.get() + "张图片，耗时" + watch.elapsed(TimeUnit.SECONDS) + "秒");
         LogUtil.log("拼图开始共需要" + (w * h) + "张图片，目前读取"+readImg.get()+"张,预计重复率"+((w * 1.0 * w) / readImg.get()));
-        drawNewImage(aimIm);
+        BufferedImage result = drawNewImage(aimIm);
         LogUtil.log("拼图完成，耗时" + watch.elapsed(TimeUnit.SECONDS) + "秒");
+        return result;
     }
 
-    private void drawNewImage(BufferedImage aimIm) throws IOException {
+    private void checkParam() {
+        File dbDir = new File(dbPath);
+        if(!dbDir.exists() || !dbDir.isDirectory()){
+            LogUtil.log("图片目录错误:" + dbPath);
+            throw new RuntimeException("图片目录错误");
+        }
+
+        File aimFile = new File(aimPath);
+
+        if(!aimFile.exists() || ! aimFile.isFile()){
+            LogUtil.log("参照图片错误:" + dbPath);
+            throw new RuntimeException("参照图片错误");
+        }
+    }
+
+    private BufferedImage drawNewImage(BufferedImage aimIm) throws IOException {
         int width = aimIm.getWidth();
         int height = aimIm.getHeight();
         int w = width / unitW;
@@ -236,7 +291,9 @@ public class MosaicMaker {
                     if (autoBlend) {
                         fitSubIm = ImageUtil.blend(fitSubIm, curAimSubIm, ImageUtil.calcBlend(fitSubIm));
                     }
-                    LogUtil.logProcess("图片绘制中……", readImg.incrementAndGet(), w * h);
+                    int n = readImg.incrementAndGet();
+                    LogUtil.logProcess("图片绘制中……", n, w * h);
+                    LogUtil.showProcess(writeProcess, n, w * h);
                     g.drawImage(fitSubIm, x, y, unitW, unitH, null);
                     latch.countDown();
                 });
@@ -250,7 +307,8 @@ public class MosaicMaker {
         } finally {
             pool.shutdown();
         }
-        ImageUtil.save(newIm, outPath);
+
+        return newIm;
     }
 
     //搜索合适子图
@@ -283,7 +341,9 @@ public class MosaicMaker {
                         BufferedImage bi = ImageUtil.resize(ImageIO.read(file), unitW, unitH);
                         String key = ImageUtil.calKey(bi, mode);
                         bi = null;
-                        LogUtil.logProcess("读取文件中……", readImg.incrementAndGet(), dbSize);
+                        int n = readImg.incrementAndGet();
+                        LogUtil.logProcess("读取文件中……", n, dbSize);
+                        LogUtil.showProcess(readProcess, n, dbSize);
                         unit = new PuzzleUnit(max, key, file.getAbsolutePath(), unitW, unitH);
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -37,6 +37,9 @@ public class ImageUtilTest {
         for(File  f : path.listFiles()){
             try {
                 BufferedImage bi = ImageIO.read(f);
+                if(null == bi){
+                    continue;
+                }
                 tree.put(f.getName(), ImageUtil.calcStandardDeviation(bi));
             } catch (IOException e) {
                 e.printStackTrace();

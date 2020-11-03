@@ -1,9 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.toolplat.mosaic.ui.contoroller.MainUIController">
-   <children>
-      <Pane prefHeight="230.0" prefWidth="380.0" />
+<AnchorPane minHeight="558.0" minWidth="914.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.toolplat.mosaic.ui.contoroller.MainUIController">
+    <children>
+        <SplitPane dividerPositions="0.7719298245614035" minHeight="558.0" minWidth="914.0">
+            <items>
+                <SplitPane dividerPositions="0.34172661870503596, 0.9064748201438849" minHeight="200.0" minWidth="160.0" orientation="VERTICAL">
+                    <items>
+                        <AnchorPane minHeight="100.0" minWidth="160.0">
+                            <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="38.0" minHeight="51.0" minWidth="683.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3">
+                                <children>
+                                    <Label text="图片目录" GridPane.rowIndex="3" />
+
+                                    <TextField fx:id="sourceDir" minHeight="27.0" minWidth="463.0" promptText="D:\workspace\example">
+                                        <HBox.margin>
+                                            <Insets left="5.0" right="5.0" />
+                                        </HBox.margin>
+                                    </TextField>
+                                    <Button mnemonicParsing="false" onAction="#chooseSourceDir" text="选择">
+
+                                    </Button>
+                                </children>
+                            </HBox>
+
+                            <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="87.0" minHeight="51.0" minWidth="683.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3">
+                                <children>
+                                    <Label text="参照图片" GridPane.rowIndex="3" />
+
+                                    <TextField fx:id="aimPath" minHeight="27.0" minWidth="463.0" promptText="D:\workspace\example">
+                                        <HBox.margin>
+                                            <Insets left="5.0" right="5.0" />
+                                        </HBox.margin>
+                                    </TextField>
+                                    <Button mnemonicParsing="false" onAction="#chooseAimPath" text="选择">
+
+                                    </Button>
+                                </children>
+                            </HBox>
+
+                            <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="148.0">
+                                <children>
+                                    <Label text="生成样式" />
+                                    <ChoiceBox fx:id="mode" minHeight="23.0" minWidth="71.0">
+                                        <items>
+                                            <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="GRAY" />
+                                                <String fx:value="RGB" />
+                                            </FXCollections>
+                                        </items>
+                                    </ChoiceBox>
+                                </children>
+                            </HBox>
+
+
+                            <HBox alignment="CENTER_LEFT" layoutX="214.0" layoutY="148.0">
+                                <children>
+                                    <Label text="生成图片宽度（像素）" />
+                                    <TextField fx:id="targetW" minHeight="27.0" minWidth="250.0" promptText="生成图片宽度，按厘米计算，长度按目标图片等比处理" text="10240">
+                                        <HBox.margin>
+                                            <Insets left="5.0" right="5.0" />
+                                        </HBox.margin>
+                                    </TextField>
+                                </children>
+                            </HBox>
+
+                        </AnchorPane>
+                        <AnchorPane minHeight="100.0" minWidth="160.0">
+                            <children>
+                                <ScrollPane fx:id="targetImgPane" minHeight="306.0" minWidth="700.0" prefHeight="355.0" prefWidth="700.0">
+                                    <ImageView fx:id="targetImg">
+
+                                    </ImageView>
+                                </ScrollPane>
+                                <TextArea fx:id="console" prefHeight="336.0" prefWidth="701.0" visible="false" />
+                            </children>
+                        </AnchorPane>
+                        <AnchorPane minHeight="95.0" minWidth="160.0" prefHeight="95.0" prefWidth="700.0">
+                            <children>
+                                <Button fx:id="btnRun" layoutX="625.0" layoutY="27.0" mnemonicParsing="false" onAction="#run" prefHeight="27.0" prefWidth="70.0" text="运 行" />
+                                <Button layoutX="624.0" layoutY="67.0" mnemonicParsing="false" onAction="#save" text="保存图片" />
+                                <Label layoutX="25.0" layoutY="45.0" text="读取进度" />
+                                <ProgressBar fx:id="readProcess" accessibleText="文件读取进度" layoutX="97.0" layoutY="45.0" minWidth="500.0" prefHeight="16.0" prefWidth="500.0" progress="0.0" />
+                                <Label layoutX="25.0" layoutY="70.0" text="绘制进度" />
+                                <ProgressBar fx:id="writeProcess" accessibleText="生成文件进度" layoutX="97.0" layoutY="70.0" minWidth="500.0" prefHeight="16.0" prefWidth="500.0" progress="0.0" />
+                                <Label layoutX="23.0" layoutY="16.0" text="缩放比例" />
+                                <Slider fx:id="zoomSlider" layoutX="100.0" layoutY="14.0" minWidth="500" />
+                            </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+                <SplitPane dividerPositions="0.34172661870503596, 0.6618705035971223" minHeight="200.0" minWidth="160.0" orientation="VERTICAL">
+                    <items>
+
+                        <AnchorPane minHeight="100.0" prefWidth="160.0">
+
+                            <Label fx:id="readme" text="马赛克拼图软件" />
+                        </AnchorPane>
+
+                        <AnchorPane minHeight="100.0" minWidth="160.0">
+                            <Label text="关注微信公众号获取更多有趣工具" />
+                            <ImageView fx:id="followImg" fitHeight="170.0" fitWidth="170.0" layoutX="18.0" layoutY="22.0" />
+                        </AnchorPane>
+
+                        <AnchorPane minHeight="100.0" minWidth="160.0">
+                            <Label text="创作不易，感谢打赏" />
+                            <ImageView fx:id="sponsorImg" fitHeight="170.0" fitWidth="170.0" layoutX="16.0" layoutY="32.0" />
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+            </items>
+        </SplitPane>
    </children>
 </AnchorPane>

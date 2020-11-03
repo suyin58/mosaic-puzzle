@@ -7,7 +7,7 @@
     <groupId>org.toolplat</groupId>
     <artifactId>mosaic-puzzle</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <modules>
         <module>mosaic-puzzle-ui</module>
         <module>mosaic-puzzle-core</module>

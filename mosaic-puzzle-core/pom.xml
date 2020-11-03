@@ -5,11 +5,14 @@
     <parent>
         <artifactId>mosaic-puzzle</artifactId>
         <groupId>org.toolplat</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.toolplat.mosaic</groupId>
     <artifactId>mosaic-puzzle-core</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
 
     <dependencies>
         <!--图片压缩-->

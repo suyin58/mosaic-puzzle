@@ -161,6 +161,7 @@ public class ImageUtil {
 
     public static final BufferedImage resize(BufferedImage im, int w, int h) {
 
+
         try {
             return Thumbnails.fromImages(Lists.newArrayList(im)).size(w, h).keepAspectRatio(false).asBufferedImage();
         } catch (IOException e) {
