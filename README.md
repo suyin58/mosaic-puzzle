@@ -1,5 +1,6 @@
 # mosaic-puzzle
 马赛克拼图效果：[JAR下载](https://github.com/suyin58/mosaic-puzzle/blob/main/mosaic-puzzle-ui/mosaic-puzzle-ui.jar?raw=true)
+[exe下载](https://github.com/suyin58/mosaic-puzzle/raw/main/mosaic-puzzle-ui/mosaic_puzzle.exe)
 - 代码启动路径：mosaic-puzzle-core/com.toolplat.mosaic.core.Main.java
 - GUI 启动路径：mosaic-puzzle-ui/com.toolplat.mosaic.ui.MainUI.java
 
